@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol: Neural Ingest System | Specification v2.1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Syncopate:wght@400;700&family=Inter:ital,wght@0,300;0,400;0,600;1,300&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --accent: #00f2ff;
+            --accent-muted: rgba(0, 242, 255, 0.12);
+            --violet: #7227ff;
+            --violet-muted: rgba(114, 39, 255, 0.2);
+            --text: #e0e0e0;
+            --text-dim: #909090;
+            --border: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.02);
+            --bezier: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        .sync {
+            font-family: 'Syncopate', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+        }
+
+        b,
+        strong {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .accent-text {
+            color: var(--accent);
+        }
+
+        /* Structural Grid */
+        .master-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -3;
+            opacity: 0.3;
+        }
+
+        .section-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 80px 5%;
+        }
+
+        @media (min-width: 768px) {
+            .section-container {
+                padding: 160px 5%;
+            }
+        }
+
+        /* Hero Layer */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-pre {
+            font-size: 0.65rem;
+            letter-spacing: 12px;
+            opacity: 0.4;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 12vw, 8rem);
+            line-height: 0.9;
+            margin-bottom: 40px;
+            font-weight: 900;
+            word-break: break-word;
+        }
+
+        .hero h1 span {
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Typography Styles */
+        .content-para {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+
+        .content-para b {
+            color: var(--accent);
+        }
+
+        /* Deep Science Blocks */
+        .science-module {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+            margin-bottom: 100px;
+            align-items: start;
+        }
+
+        @media (min-width: 1100px) {
+            .science-module {
+                grid-template-columns: 1fr 1fr;
+                gap: 120px;
+                margin-bottom: 200px;
+            }
+        }
+
+        .side-visual {
+            position: relative;
+            height: 350px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        @media (min-width: 1100px) {
+            .side-visual {
+                position: sticky;
+                top: 100px;
+                height: 600px;
+            }
+        }
+
+        .tech-label {
+            font-size: 0.6rem;
+            font-family: 'Space Grotesk';
+            color: var(--accent);
+            opacity: 0.5;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        /* Interactive Visual Components */
+        .scanner-ring {
+            width: clamp(150px, 40vw, 250px);
+            height: clamp(150px, 40vw, 250px);
+            border: 1px dashed var(--accent);
+            border-radius: 50%;
+            position: relative;
+            animation: spin 30s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .foveal-point {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Abstract Data Lists */
+        .data-stream {
+            list-style: none;
+            margin-top: 50px;
+        }
+
+        .data-stream li {
+            border-left: 1px solid var(--accent);
+            padding: 20px 0 20px 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--accent-muted), transparent);
+        }
+
+        .data-stream li h4 {
+            font-family: 'Space Grotesk';
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .data-stream li p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+
+        /* New Expansion Blocks */
+        .deep-analysis {
+            background: rgba(114, 39, 255, 0.05);
+            border: 1px solid var(--violet-muted);
+            padding: 25px;
+            margin: 30px 0;
+            border-left: 4px solid var(--violet);
+        }
+
+        .deep-analysis h5 {
+            color: var(--violet);
+            margin-bottom: 15px;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Table Wrapper */
+        .table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 40px 0;
+            border: 1px solid var(--border);
+        }
+
+        .spec-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .spec-table th {
+            text-align: left;
+            padding: 20px;
+            border-bottom: 2px solid var(--border);
+            opacity: 0.5;
+            white-space: nowrap;
+        }
+
+        .spec-table td {
+            padding: 25px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-table tr:hover {
+            background: var(--glass);
+        }
+
+        footer {
+            padding: 80px 5%;
+            background: #000;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat-huge {
+            font-family: 'Syncopate';
+            font-size: clamp(3rem, 15vw, 6.5rem);
+            line-height: 1;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        /* Wave Animation Scaling */
+        .wave-anim {
+            display: flex;
+            gap: 4px;
+            align-items: flex-end;
+            height: 80px;
+        }
+
+        .bar {
+            width: 6px;
+            background: var(--violet);
+            animation: barPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes barPulse {
+
+            0%,
+            100% {
+                height: 20px;
+                opacity: 0.3;
+            }
+
+            50% {
+                height: 80px;
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .hero h1 br {
+                display: none;
+            }
+
+            .hero-pre {
+                letter-spacing: 6px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="master-grid"></div>
+
+    <section class="section-container hero">
+        <div class="hero-pre">SYSTEM SPECIFICATION // PROTOCOL v2.1</div>
+        <h1>NEURAL <span>INGEST</span> SYSTEM</h1>
+        <p class="content-para">
+            Beyond reading. This is <b>Direct Conceptual Mapping</b>. By leveraging the specific neurological
+            constraints of the human visual cortex, we achieve throughput rates previously considered impossible.
+        </p>
+    </section>
+
+    <!-- Chapter 01: Saccadic Inhibition -->
+    <section class="section-container">
+        <div class="science-module">
+            <div class="science-text">
+                <div class="hero-pre accent-text">PHASE 01 // OCULAR MECHANICS</div>
+                <h2 class="sync" style="font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 40px;">
+                    SACCADIC<br>INHIBITION
+                </h2>
+                <p class="content-para">
+                    The human eye does not glide across text. It moves in a series of "jumps" called <b>Saccades</b>.
+                    During a saccade, your brain experiences <b>Saccadic Masking</b>—it effectively ignores all incoming
+                    visual information to prevent motion blur.
+                </p>
+                <div class="deep-analysis">
+                    <h5>NEURO-MECHANICAL BOTTLENECK</h5>
+                    <p style="font-size: 0.95rem;">
+                        The average reader spends <b>230 milliseconds</b> per fixation and <b>30 milliseconds</b> per
+                        saccade. Over a single page, this "travel time" creates a dead-loss of <b>21% of total
+                            processing
+                            bandwidth</b>.
+                    </p>
+                </div>
+                <ul class="data-stream">
+                    <li>
+                        <h4>RETINAL STEADINESS</h4>
+                        <p>Our RSVP engine locks the eye center. By keeping the retina perfectly steady, we bypass the
+                            need for saccades, recovering the lost 21% of time instantly.</p>
+                    </li>
+                    <li>
+                        <h4>REGRESSION TERMINATION</h4>
+                        <p>Our system forces a forward-only stream, habituating the brain to process high-density
+                            information in a single pass without skippping back.</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="side-visual">
+                <div class="tech-label">FOCAL VECTOR MONITOR</div>
+                <div class="scanner-ring">
+                    <div class="foveal-point"></div>
+                </div>
+                <div style="font-family: 'Space Grotesk'; font-size: 0.7rem; color: var(--accent); margin-top: 40px;">
+                    STATUS: LOCK ACHIEVED // 0ms SACCADE</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 02: The ORP Constant -->
+    <section class="section-container"
+        style="background: var(--glass); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+        <div class="science-module">
+            <div class="side-visual" style="border: none; background: transparent; height: auto; min-height: 200px;">
+                <div style="text-align: center; width: 100%;">
+                    <div
+                        style="font-family: 'Syncopate'; font-size: clamp(2rem, 8vw, 4rem); opacity: 0.05; letter-spacing: 1px;">
+                        ALIGNMENT</div>
+                    <div
+                        style="font-family: 'Syncopate'; font-size: clamp(2rem, 8vw, 4rem); letter-spacing: 1px; margin-top: -1.2em;">
+                        ALIG<span style="color:var(--accent); text-shadow: 0 0 30px var(--accent);">N</span>MENT
+                    </div>
+                    <div
+                        style="height: 2px; width: 80%; max-width: 400px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 30px auto;">
+                    </div>
+                </div>
+            </div>
+            <div class="science-text">
+                <div class="hero-pre accent-text">PHASE 02 // MORPHOLOGICAL MAPPING</div>
+                <h2 class="sync" style="font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 40px;">THE ORP<br>CONSTANT
+                </h2>
+                <p class="content-para">
+                    Every word has a sweet spot. Psycholinguistics identifies this as the <b>Optimal Recognition Point
+                        (ORP)</b>. It is the specific letter position where recognize-latency is lowest.
+                </p>
+                <div class="deep-analysis" style="border-color: var(--accent); background: var(--accent-muted);">
+                    <h5 style="color: var(--accent);">FOVEAL CENTER TRIGGER</h5>
+                    <p style="font-size: 0.95rem;">
+                        If the eye hits the ORP, the word is processed in <b>sub-100ms</b>. If the eye hits even one
+                        character to the left or right, processing time <b>doubles</b>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter 03: Alpha State Entrainment -->
+    <section class="section-container">
+        <div class="science-module">
+            <div class="science-text">
+                <div class="hero-pre accent-text" style="color: var(--violet);">PHASE 03 // NEURAL ARCHITECTURE</div>
+                <h2 class="sync" style="font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 40px;">ALPHA
+                    STATE<br>ENTRAINMENT
+                </h2>
+                <p class="content-para">
+                    Reading efficiency is restricted by your current <b>Neural Oscillation Frequency</b>. Stress or
+                    boredom push the brain into High-Beta (chaotic) or Delta (sleepy) states.
+                </p>
+                <div class="deep-analysis">
+                    <h5>THE 10Hz GOLDEN RATIO</h5>
+                    <p style="font-size: 0.95rem;">
+                        The <b>Alpha Frequency (8-12Hz)</b> is the state of <b>Superfluidity</b>. It is the bridge
+                        between the conscious and subconscious mind, where pattern recognition peaks.
+                    </p>
+                </div>
+                <ul class="data-stream" style="margin-bottom: 60px;">
+                    <li>
+                        <h4>BINAURAL TRANSDUCTION</h4>
+                        <p>The integrated audio manager plays a precise carrier frequency difference that the brain
+                            synthesizes as a 10Hz "Alpha Beat."</p>
+                    </li>
+                </ul>
+                <div class="hero-pre">SCIENTIFIC CITATION: <a
+                        href="https://scholar.google.com/scholar?q=Frequency+Following+Response+in+Visual+Tasks"
+                        target="_blank" style="color: inherit; text-decoration: none; opacity: 0.6;">Journal of
+                        Neurophysiology // Frequency Following Response in Visual Tasks</a></div>
+            </div>
+            <div class="side-visual" style="border-color: var(--violet-muted);">
+                <div class="tech-label" style="color: var(--violet);">OSCILLATION MONITOR</div>
+                <div class="wave-anim">
+                    <div class="bar" style="animation-delay: 0.1s"></div>
+                    <div class="bar" style="animation-delay: 0.3s"></div>
+                    <div class="bar" style="animation-delay: 0.5s"></div>
+                    <div class="bar" style="animation-delay: 0.2s"></div>
+                    <div class="bar" style="animation-delay: 0.4s"></div>
+                </div>
+                <div style="font-family: 'Space Grotesk'; font-size: 0.7rem; color: var(--violet); margin-top: 40px;">
+                    TARGET: 10.0 Hz // FOCUS STABILIZED</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Benchmarks -->
+    <section class="section-container" style="border-top: 1px solid var(--border);">
+        <h2 class="sync" style="text-align: center; margin-bottom: 60px; font-size: clamp(1.2rem, 5vw, 2rem);">
+            THROUGHPUT<br>COMPARISON</h2>
+        <div class="table-wrap">
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>METRIC</th>
+                        <th>TYPICAL READING</th>
+                        <th style="color: var(--accent);">THE PROTOCOL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Average Velocity</b></td>
+                        <td>150 - 250 WPM</td>
+                        <td style="color: var(--accent);">450 - 900+ WPM</td>
+                    </tr>
+                    <tr>
+                        <td><b>Processing Latency</b></td>
+                        <td>High (Saccades)</td>
+                        <td style="color: var(--accent);">Near-Zero (Locked)</td>
+                    </tr>
+                    <tr>
+                        <td><b>Conceptual Capture</b></td>
+                        <td>Symbolic</td>
+                        <td style="color: var(--accent);">Direct Conceptual Mapping</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 80px;">
+            <div class="stat-huge">80%</div>
+            <div class="hero-pre">REDUCED COGNITIVE FRICTION</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="hero-pre" style="opacity: 0.3;">&copy; 2026 SPEEDREAD LABS // NEURAL ARCHITECTURE</div>
+        <p style="font-size: 0.75rem; color: #444; max-width: 600px; margin: 20px auto; padding: 0 20px;">
+            The information contained in this protocol represents the frontier of human-machine interaction.
+        </p>
+    </footer>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const grid = document.querySelector('.master-grid');
+            if (grid) grid.style.transform = `translateY(${scrolled * 0.2}px)`;
+
+            const visuals = document.querySelectorAll('.side-visual');
+            visuals.forEach(v => {
+                const rect = v.getBoundingClientRect();
+                const center = rect.top + rect.height / 2;
+                const windowCenter = window.innerHeight / 2;
+                const dist = (center - windowCenter) * 0.01;
+                v.style.transform = `perspective(1000px) rotateX(${dist}deg)`;
+            });
+        });
+    </script>
+</body>
+
+</html>
